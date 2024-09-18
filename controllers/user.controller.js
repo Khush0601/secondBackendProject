@@ -21,11 +21,24 @@ exports.createUser=async(req,res)=>{
 }
 
 exports.findUser=async(req,res)=>{
- const userName=req.body;
- const savedUser=await userModel.findOne({userName:userName})
- if(!savedUser){
-    res.status(401).send({
+   
+ try{
+   
+    const userName=req.query.name;
+ const userList=await userModel.find({})
+ if(userList.length<0){
+   return res.status(404).send({
         message:'user not present'
+    })
+ }
+ else{
+    let filteruser=userList.filter((el)=>el.name.toLowerCase().includes(userName.toLowerCase()))
+   return res.status(200).send(filteruser)
+ }
+ }
+ catch(err){
+    res.status(500).send({
+        message:"error while finding the user "
     })
  }
  
